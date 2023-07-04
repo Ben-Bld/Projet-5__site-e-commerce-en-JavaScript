@@ -16,5 +16,3 @@ console when the server starts, e.g. `Listening on port 3001`.
 
 
 https://ben-bld.github.io/Projet-5__site-e-commerce-en-JavaScript/front/html/index.html
-https://ben-bld.github.io/Projet-5__site-e-commerce-en-JavaScript/front/html/index.html
-https://ben-bld.github.io/Projet-5__site-e-commerce-en-JavaScript/front/html/index.html
