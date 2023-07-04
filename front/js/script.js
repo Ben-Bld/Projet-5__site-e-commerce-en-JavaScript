@@ -19,10 +19,12 @@ fetch('http://localhost:3000/api/products')
       <h3 class="productName">${data[i].name} </h3>
       <p class="productDescription">Dis enim malesuada risus sapien gravida nulla nisl arcu. Dis enim malesuada risus sapien gravida nulla nisl arcu.</p>
      </article>`;
+      
+
+     
+    }});  
+
+
     
-    }});
-
-
-
 
  
