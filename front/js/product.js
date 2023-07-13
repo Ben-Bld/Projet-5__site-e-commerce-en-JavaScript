@@ -59,30 +59,35 @@ let panier = "";
 
 let addToCart = document.getElementById("addToCart");
 
-//ajouter un event listener avec une fonction qui va récupérer les éléments
+//ajouter un event listener avec une fonction qui déclencher une fonction au clic de addToCart
 
 addToCart.addEventListener("click", functionPanier);
 
-//creation d'une fonction qui va créer un objet avec les détails du produit
-
-localStorage.setItem("panier", {});
-
+//creation d'une fonction qui va créer un objet "detailsProduits" avec les détails du produit
 function functionPanier() {
-  let detailsProduit = [{
+  let detailsProduit = {
     id: idItem,
-    quantity: document.getElementById("quantity").value,
+    quantity: parseInt(document.getElementById("quantity").value),
     color: document.getElementById("colors").value,
-  }];
+  };
 
+  //1) creation d'un array vide
 
+  detailsProduitLocalStorage = [];
+  //2) On envoie les details de l'article (detailsProduit) dans l'array
 
-  localStorage.setItem("panier",JSON.stringify(detailsProduit))
-  console.log(panier, localStorage[panier])
+  // 3) On envoie le l'array (detailsProduitLocalStorage) dans le localstorage
+  // 4) Si "panier" dans localStorage est vide, on y ajoute detailsProduit
+  if (localStorage.getItem("panier") == null) {
+    detailsProduitLocalStorage.push(detailsProduit);
+
+    localStorage.setItem("panier", JSON.stringify(detailsProduitLocalStorage));
+  } else {    
+    //5) sinon, on rajoute la selection au "panier" existant
+    detailsProduitLocalStorage = JSON.parse(localStorage.getItem("panier"));
+    detailsProduitLocalStorage.push(detailsProduit);
+    localStorage.setItem("panier", JSON.stringify(detailsProduitLocalStorage));
   }
- 
-  functionPanier()
-  
 
-//stocker le tout dans le localstorage
+}
 
-//ajouter selection au localstorage
