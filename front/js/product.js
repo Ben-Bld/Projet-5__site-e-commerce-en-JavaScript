@@ -64,6 +64,7 @@ let addToCart = document.getElementById("addToCart");
 addToCart.addEventListener("click", functionPanier);
 
 //creation d'une fonction qui va créer un objet "detailsProduits" avec les détails du produit
+
 function functionPanier() {
   let detailsProduit = {
     id: idItem,
@@ -78,16 +79,54 @@ function functionPanier() {
 
   // 3) On envoie le l'array (detailsProduitLocalStorage) dans le localstorage
   // 4) Si "panier" dans localStorage est vide, on y ajoute detailsProduit
-  if (localStorage.getItem("panier") == null) {
-    detailsProduitLocalStorage.push(detailsProduit);
 
-    localStorage.setItem("panier", JSON.stringify(detailsProduitLocalStorage));
-  } else {    
-    //5) sinon, on rajoute la selection au "panier" existant
-    detailsProduitLocalStorage = JSON.parse(localStorage.getItem("panier"));
-    detailsProduitLocalStorage.push(detailsProduit);
-    localStorage.setItem("panier", JSON.stringify(detailsProduitLocalStorage));
+  // 5) Si la selection de couleur et/ou de quantité est vide, on envoie une alerte
+
+  if (detailsProduit.color == "") {
+    alert("Selectionnez une couleur pour l'ajouter au panier");
+  } else if (detailsProduit.quantity == 0) {
+    alert("Sélectionnez au moins un article");
+  } else {
+    let cart1 = JSON.parse(localStorage.getItem("panier"));
+
+    //6 On regarde si le localstorage est vide, puis on ajoute une nouvelle entrée
+    if (localStorage.getItem("panier") == null) {
+      detailsProduitLocalStorage.push(detailsProduit);
+
+      localStorage.setItem(
+        "panier",
+        JSON.stringify(detailsProduitLocalStorage)
+      );
+      // } else if (detailsProduitLocalStorage) {
+      //   detailsProduitLocalStorage = JSON.parse(localStorage.getItem("panier"));
+      //   detailsProduitLocalStorage.push(detailsProduit);
+      //   localStorage.setItem(
+      //     "panier",
+      //     JSON.stringify(detailsProduitLocalStorage)
+      //   );
+    } else if (localStorage.getItem("panier") != null) {
+      //Si l'article est déjà présent dans le localstorage, on modifie uniquement la quantité
+      const articlePresent = cart1.find(
+        (element) =>
+          element.id == detailsProduit.id &&
+          element.color == detailsProduit.color
+      );
+      if (articlePresent) {
+        articlePresent.quantity =
+          parseInt(detailsProduit.quantity) + parseInt(articlePresent.quantity);
+        localStorage.setItem("panier", JSON.stringify(cart1));
+      } else {
+        detailsProduitLocalStorage = JSON.parse(localStorage.getItem("panier"));
+        detailsProduitLocalStorage.push(detailsProduit);
+        localStorage.setItem(
+          "panier",
+          JSON.stringify(detailsProduitLocalStorage)
+        );
+       
+      }
+
+    
+  
+    }
   }
-
 }
-
