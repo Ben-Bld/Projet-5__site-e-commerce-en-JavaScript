@@ -97,13 +97,6 @@ function functionPanier() {
         "panier",
         JSON.stringify(detailsProduitLocalStorage)
       );
-      // } else if (detailsProduitLocalStorage) {
-      //   detailsProduitLocalStorage = JSON.parse(localStorage.getItem("panier"));
-      //   detailsProduitLocalStorage.push(detailsProduit);
-      //   localStorage.setItem(
-      //     "panier",
-      //     JSON.stringify(detailsProduitLocalStorage)
-      //   );
     } else if (localStorage.getItem("panier") != null) {
       //Si l'article est déjà présent dans le localstorage, on modifie uniquement la quantité
       const articlePresent = cart1.find(
