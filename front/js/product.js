@@ -115,12 +115,7 @@ function functionPanier() {
           "panier",
           JSON.stringify(detailsProduitLocalStorage)
         );
-       
       }
-
-    
-  
     }
   }
 }
-
