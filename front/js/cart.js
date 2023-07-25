@@ -15,9 +15,6 @@ fetch("http://localhost:3000/api/products")
       let getId = panier1[i].id;
       let getIndex = data.findIndex((item) => item._id === getId);
 
-      let getName = data[getIndex].name;
-      let getPrix = data[getIndex].price;
-
       cartItem.innerHTML += `   <article class="cart__item" data-id="${
         panier1[i].id
       }" data-color="${panier1[i].color}">
@@ -57,6 +54,7 @@ fetch("http://localhost:3000/api/products")
           deleteItem.addEventListener("click", () => deleteArticle(a))
         );
 
+      //on selectionne l'input number, puis avec un addeventlistener change, on modifie la quantité dans le localstorage
       document.querySelectorAll(`.quantity${[a]}`).forEach((deleteItem) =>
         deleteItem.addEventListener("change", function () {
           const selectInput = document.querySelectorAll(`.quantity${[a]}`);
@@ -65,12 +63,13 @@ fetch("http://localhost:3000/api/products")
           let articles = JSON.parse(localStorage.getItem("panier"));
           articles[a].quantity = Number(updatedInput);
           localStorage.setItem("panier", JSON.stringify(articles));
-
-          //  localStorage.setItem("panier", JSON.stringify(articles.quantity));
+          window.location.reload();
         })
       );
     }
   });
+
+//On  récupére le contenu du panier avec une fonction réutilisée plus tard
 
 function getPanier() {
   let articles = [];
@@ -79,6 +78,8 @@ function getPanier() {
   }
   return articles;
 }
+
+//fonction pour supprimer les articles dans le
 
 function deleteArticle(a) {
   let articles = JSON.parse(localStorage.getItem("panier"));
@@ -89,40 +90,38 @@ function deleteArticle(a) {
 
 function updateValue() {}
 
-/// TEST CORRECTION AJOUT
+// Gestion du total et du prix du panier
 
-///////////////////////////////////////
+let totalQuantity = document.getElementById("totalQuantity");
+let totalPrix = document.getElementById("totalPrice");
 
-///////////////////////////////////////////
-// function getPanier() {
-//   let articles = [];
-//   if (localStorage.getItem("panier") != null) {
-//     articles = JSON.parse(localStorage.getItem("panier"));
-//   }
-//   console.log(articles)
-//   return articles;
-// }
+let qty = 0;
 
-// getPanier()
+let price = 0;
+fetch("http://localhost:3000/api/products")
+  .then((response) => response.json())
+  .then((data) => {
+    for (let a = 0; a < panier1.length; a++) {
+      let getId = panier1[a].id;
+      let getIndex = data.findIndex((item) => item._id === getId);
 
-// console.log(articles)
+      qty += panier1[a].quantity;
+      totalQuantity.textContent = qty;
 
-// fonction pour supprimer les articles du localstorage
-// function deleteArticle(id, color) {
-//   let article = getPanier();
-//   let index = article.indexOf();
+      price += data[getIndex].price * panier1[a].quantity;
 
-//   console.log(index);
+      console.log(price);
+      totalPrix.textContent = price;
+    }
+  });
 
-//   for (i = 0; i < article.length; i++) {
-//     if (id === article[i][0] && color === article[i][1]) {
-//       //   article.splice(i, 1);
-//       //   localStorage.setItem("panier", JSON.stringify(article));
-//       //   window.location.reload();
+/// Formulaire de confirmation
+let prenom = document.getElementById("firstName");
+let nom = document.getElementById("lastName");
+let ville = document.getElementById("city");
+let adresse = document.getElementById("address");
+let email = document.getElementById("email");
 
-//       let array2 = panier1.indexOf(article[i].id);
-//       console.log(array2);
-//     }
-//   }
-// }
-//   });
+
+// regex pour s'assurer que les infos rentrées sont compatibles avec les inputs
+
