@@ -1,121 +1,80 @@
-// Chercher l'url et le stocker dans la variable "url"
-
+// Récupérer les paramètres d'URL et stocker dans la variable "url"
 let url = new URL(document.location).searchParams;
 
-// stocker l'id de l'objet présent dans l'url, et le stocker dans idItem
-
+// on stocke l'id de l'objet présent dans l'URL dans "idItem"
 const localhost = "http://localhost:3000/api/products";
-
-//chercher l'id de l'item present dans l'url et le stocket dans idItem
-
 const idItem = url.get("id");
 
-//concatener pour obtenir l'url du produit
+// on construit l'URL du produit
+const urlProduct = `${localhost}/${idItem}`;
 
-const urlProduct = localhost + "/" + idItem;
-
-//chercher l'url du produit, et le convertir en json, puis modifier les elements via innerHTML
+// on récupére les données du produit depuis l'API et on met à jour les éléments du DOM avec les informations du produit
 fetch(urlProduct)
   .then((response) => response.json())
   .then((data) => {
-    //Creer variable pour aller chercher l'élément (titre, prix...)
-    const titre = document.getElementById("title");
-    //remplacer une partie du html avec le titre du produit obtenu au dessus
-    titre.innerHTML += `<h1 id="title">${data.name}<!-- Nom du produit --></h1>`;
+    // mise à jour des éléments du DOM avec les données du produit
+    document.getElementById(
+      "title"
+    ).innerHTML = `<h1 id="title">${data.name}<!-- Nom du produit --></h1>`;
+    document.getElementById(
+      "price"
+    ).innerHTML = `<span id="price">${data.price}<!-- 42 --></span>`;
+    document.getElementById(
+      "description"
+    ).innerHTML = `<p id="description">${data.description}</p>`;
 
-    //repeter la même chose pour les autres elements (prix, descript)
-    const prix = document.getElementById("price");
-    prix.innerHTML += `<span id="price">${data.price}<!-- 42 --></span>`;
-
-    const descriptionCanap = document.getElementById("description");
-    descriptionCanap.innerHTML += ` <p id="description">${data.description}</p>`;
-
-    //creation de la balise image (non présente dans l'html)
-    let ajout = document.querySelector(".item__img");
-    let ajoutImage = ajout.appendChild(document.createElement("img"));
+    // Ajout d'une balise image avec les attributs src et alt
+    const ajout = document.querySelector(".item__img");
+    const ajoutImage = document.createElement("img");
     ajoutImage.setAttribute("src", `${data.imageUrl}`);
+    ajoutImage.setAttribute("alt", `${data.altTxt}`);
+    ajout.appendChild(ajoutImage);
 
-    //ajout du choix de la couleur en utilisant une boucle for pour s'adapter au nombre de couleurs dispo à chaque article
-
-    let choixCouleur = document.getElementById("colors");
-    let ajoutChoixCouleur = "";
-    for (i = 0; i < data.colors.length; i++) {
-      ajoutChoixCouleur = choixCouleur.appendChild(
-        document.createElement("option")
-      );
-      ajoutChoixCouleur.innerHTML += ` <option value="${data.colors[i]}">${data.colors[i]}</option>`;
+    // Ajout des options de choix de couleur
+    const choixCouleur = document.getElementById("colors");
+    for (let i = 0; i < data.colors.length; i++) {
+      const ajoutChoixCouleur = document.createElement("option");
+      ajoutChoixCouleur.innerHTML = `<option value="${data.colors[i]}">${data.colors[i]}</option>`;
+      choixCouleur.appendChild(ajoutChoixCouleur);
     }
 
-    //changer la balise <title> pour qu'elle corresponde au nom du produit
+    // Mise à jour du titre de la page avec le nom du produit
     document.title = `${data.name}`;
   });
 
-//changer la balise title pour que ça corresponde au nom du produit
-
-// sauvegarder le contenu du panier
-let panier = "";
-
-// selectionner le bouton "ajouter au panier"
-
-let addToCart = document.getElementById("addToCart");
-
-//ajouter un event listener avec une fonction qui déclencher une fonction au clic de addToCart
-
+// Gestion de l'ajout au panier
+const addToCart = document.getElementById("addToCart");
 addToCart.addEventListener("click", functionPanier);
 
-//creation d'une fonction qui va créer un objet "detailsProduits" avec les détails du produit
-
 function functionPanier() {
-  let detailsProduit = {
+  const detailsProduit = {
     id: idItem,
     quantity: parseInt(document.getElementById("quantity").value),
     color: document.getElementById("colors").value,
   };
 
-  //1) creation d'un array vide
-
-  detailsProduitLocalStorage = [];
-  //2) On envoie les details de l'article (detailsProduit) dans l'array
-
-  // 3) On envoie le l'array (detailsProduitLocalStorage) dans le localstorage
-  // 4) Si "panier" dans localStorage est vide, on y ajoute detailsProduit
-
-  // 5) Si la selection de couleur et/ou de quantité est vide, on envoie une alerte
-
-  if (detailsProduit.color == "") {
-    alert("Selectionnez une couleur pour l'ajouter au panier");
-  } else if (detailsProduit.quantity == 0) {
-    alert("Sélectionnez au moins un article");
+  // on vérifie si les informations sont complètes avant d'ajouter au panier
+  if (detailsProduit.color === "") {
+    alert("Sélectionnez une couleur pour l'ajouter au panier.");
+  } else if (detailsProduit.quantity === 0) {
+    alert("Sélectionnez au moins un article.");
   } else {
-    let cart1 = JSON.parse(localStorage.getItem("panier"));
+    let cart1 = JSON.parse(localStorage.getItem("panier")) || [];
 
-    //6 On regarde si le localstorage est vide, puis on ajoute une nouvelle entrée
-    if (localStorage.getItem("panier") == null) {
-      detailsProduitLocalStorage.push(detailsProduit);
+    const articlePresent = cart1.find(
+      (element) =>
+        element.id === detailsProduit.id &&
+        element.color === detailsProduit.color
+    );
 
-      localStorage.setItem(
-        "panier",
-        JSON.stringify(detailsProduitLocalStorage)
-      );
-    } else if (localStorage.getItem("panier") != null) {
-      //Si l'article est déjà présent dans le localstorage, on modifie uniquement la quantité
-      const articlePresent = cart1.find(
-        (element) =>
-          element.id == detailsProduit.id &&
-          element.color == detailsProduit.color
-      );
-      if (articlePresent) {
-        articlePresent.quantity =
-          parseInt(detailsProduit.quantity) + parseInt(articlePresent.quantity);
-        localStorage.setItem("panier", JSON.stringify(cart1));
-      } else {
-        detailsProduitLocalStorage = JSON.parse(localStorage.getItem("panier"));
-        detailsProduitLocalStorage.push(detailsProduit);
-        localStorage.setItem(
-          "panier",
-          JSON.stringify(detailsProduitLocalStorage)
-        );
-      }
+    if (articlePresent) {
+      // mise à jour la quantité si l'article est déjà présent dans le panier
+      articlePresent.quantity += parseInt(detailsProduit.quantity);
+    } else {
+      // Ajout du produit au panier si ce n'est pas déjà présent
+      cart1.push(detailsProduit);
     }
+
+    localStorage.setItem("panier", JSON.stringify(cart1));
   }
 }
