@@ -1,3 +1,5 @@
+##INSTALATION##
+
 # Kanap #
 
 This is the front end and back end server for Project 5 of the Web Developer path.
@@ -15,4 +17,20 @@ server runs on another port for any reason, this is printed to the
 console when the server starts, e.g. `Listening on port 3001`.
 
 
+###Github Page ##
+
 https://ben-bld.github.io/Projet-5__site-e-commerce-en-JavaScript/front/html/index.html
+
+
+##Présentation ##
+
+Projet effectué dans le cadré du parcours développeur Web chez Openclassrooms.
+
+Objectif: Construisez un site e-commerce en JavaScript
+
+##LIVRABLES##
+
+Un fichier ZIP contenant le code du site/
+Le test d'acceptation au format PDF.
+
+
